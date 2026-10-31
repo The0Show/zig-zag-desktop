@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "noImplicitAny": true,
+        "sourceMap": true,
+        "allowJs": true,
+        "rootDir": "src",
+        "outDir": "dist",
+        "strict": false,
+        "paths": {
+            "*": [
+                "./node_modules/*"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
