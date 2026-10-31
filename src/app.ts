@@ -57,7 +57,7 @@ export default class ZigZagApp {
 
         if (p_splash) this.createSplashWindow();
 
-        this.createMainWindow();
+        this.createMainWindow(true);
         this.createTray();
         this.createDbus();
     }
@@ -215,7 +215,7 @@ export default class ZigZagApp {
 
 const zigZag = new ZigZagApp();
 app.whenReady().then(() => {
-    zigZag.startup();
+    zigZag.startup(false);
 
     app.on("activate", () => {
         zigZag.mainWindow.show();
