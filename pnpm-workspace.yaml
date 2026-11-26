@@ -1,5 +1,5 @@
 allowBuilds:
   abstract-socket: true
-  msgpack: set this to true or false
-  msgpackr-extract: true
+  electron-winstaller: true
+  esbuild: true
 nodeLinker: hoisted

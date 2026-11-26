@@ -1,11 +1,17 @@
 {
     "name": "zig-zag-desktop",
     "version": "1.0.0",
+    "private": true,
     "description": "",
-    "main": "dist/app.js",
+    "main": "dist/js/main.js",
     "scripts": {
-        "build": "tsc",
-        "start": "pnpm run build && electron ./dist/app.js"
+        "build": "tsx scripts/build/build.mts",
+        "build:dev": "tsx scripts/build/build.mts --dev",
+        "package": "pnpm build && electron-builder",
+        "package:dir": "pnpm build && electron-builder --dir",
+        "start": "pnpm build && electron --enable-source-maps .",
+        "start:dev": "pnpm build:dev && electron --enable-source-maps .",
+        "start:watch": "pnpm build:dev && tsx scripts/startWatch.mts"
     },
     "keywords": [],
     "author": "",
@@ -19,12 +25,38 @@
     },
     "devDependencies": {
         "@types/node": "^26.1.2",
-        "electron": "^43.2.0",
+        "electron": "45.5.0",
+        "electron-builder": "^26.18.0",
+        "esbuild": "^0.28.2",
+        "tsx": "^4.23.15",
         "typescript": "^7.0.2"
     },
     "dependencies": {
         "dbus-native": "^0.16.3",
-        "mpris-service": "^2.1.2",
-        "msgpackr": "^2.0.5"
+        "mpris-service": "^2.1.2"
+    },
+    "build": {
+        "appId": "com.the0show.zig-zag-desktop",
+        "productName": "zig~zag desktop",
+        "executableName": "zig-zag-desktop",
+        "files": [
+            "!*",
+            "!node_modules",
+            "dist/js",
+            "rootfs",
+            "package.json",
+            "LICENSE"
+        ],
+        "npmRebuild": false,
+        "electronFuses": {
+            "runAsNode": false,
+            "enableCookieEncryption": false,
+            "enableNodeOptionsEnvironmentVariable": false,
+            "enableNodeCliInspectArguments": false,
+            "enableEmbeddedAsarIntegrityValidation": false,
+            "onlyLoadAppFromAsar": true,
+            "loadBrowserProcessSpecificV8Snapshot": false,
+            "grantFileProtocolExtraPrivileges": false
+        }
     }
 }

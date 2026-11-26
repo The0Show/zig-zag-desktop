@@ -1,20 +1,20 @@
 {
     "compilerOptions": {
-        "module": "NodeNext",
-        "moduleResolution": "nodenext",
-        "noImplicitAny": true,
-        "sourceMap": true,
-        "allowJs": true,
-        "rootDir": "src",
-        "outDir": "dist",
-        "strict": false,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "lib": ["DOM", "DOM.Iterable", "esnext", "esnext.array", "esnext.asynciterable", "esnext.symbol"],
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "strict": true,
+        "noImplicitAny": false,
+        "target": "ESNEXT",
+        "jsx": "preserve",
+
         "paths": {
-            "*": [
-                "./node_modules/*"
-            ]
-        }
+            "*": ["./src/*"]
+        },
+
+        "types": ["node"]
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src/**/*"]
 }
