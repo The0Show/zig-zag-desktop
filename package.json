@@ -15,8 +15,8 @@
         "start:watch": "pnpm build:dev && tsx scripts/startWatch.mts"
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": "The0Show <hello@the0show.com>",
+    "license": "GPL-2.0-only",
     "devEngines": {
         "packageManager": {
             "name": "pnpm",
