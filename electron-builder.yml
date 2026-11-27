@@ -1,0 +1,30 @@
+appId: "com.the0show.zig-zag-desktop"
+productName: "zig~zag desktop"
+executableName: "zig-zag-desktop"
+files:
+    - "!*"
+    - "!node_modules"
+    - "dist/js"
+    - "rootfs"
+    - "package.json"
+    - "LICENSE"
+npmRebuild: false
+linux:
+    category: Audio
+    synopsis: "A desktop client for zig~zag"
+    description: "A desktop client for zig~zag"
+    maintainer: "The0Show <hello@the0show.com>"
+    target:
+        - AppImage
+    desktop:
+        entry:
+            Name: zig~zag desktop
+            Comment: A desktop client for zig~zag
+            Categories: Audio
+            Keywords: zig~zag;music
+            StartupWMClass: zig-zag-desktop
+            Terminal: false
+            Type: Application
+win:
+    target:
+        - zip

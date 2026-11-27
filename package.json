@@ -1,8 +1,9 @@
 {
     "name": "zig-zag-desktop",
-    "version": "1.0.0",
+    "desktopName": "com.the0show.zig-zag-desktop",
+    "version": "0.1.0",
     "private": true,
-    "description": "",
+    "description": "A desktop client for zig~zag",
     "main": "dist/js/main.js",
     "scripts": {
         "build": "tsx scripts/build/build.mts",
@@ -34,29 +35,5 @@
     "dependencies": {
         "dbus-native": "^0.16.3",
         "mpris-service": "^2.1.2"
-    },
-    "build": {
-        "appId": "com.the0show.zig-zag-desktop",
-        "productName": "zig~zag desktop",
-        "executableName": "zig-zag-desktop",
-        "files": [
-            "!*",
-            "!node_modules",
-            "dist/js",
-            "rootfs",
-            "package.json",
-            "LICENSE"
-        ],
-        "npmRebuild": false,
-        "electronFuses": {
-            "runAsNode": false,
-            "enableCookieEncryption": false,
-            "enableNodeOptionsEnvironmentVariable": false,
-            "enableNodeCliInspectArguments": false,
-            "enableEmbeddedAsarIntegrityValidation": false,
-            "onlyLoadAppFromAsar": true,
-            "loadBrowserProcessSpecificV8Snapshot": false,
-            "grantFileProtocolExtraPrivileges": false
-        }
     }
 }
