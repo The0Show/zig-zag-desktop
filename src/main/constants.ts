@@ -6,8 +6,9 @@ const appDir = dirname(process.execPath);
 
 export const PORTABLE = existsSync(join(appDir, "._sc_"));
 
+// TODO: expose as command line flag?
 export const DATA_DIR =
-    process.env.VENCORD_USER_DATA_DIR || (PORTABLE ? join(appDir, "Data") : join(app.getPath("userData")));
+    process.env.DATA_DIR || (PORTABLE ? join(appDir, "Data") : join(app.getPath("userData")));
 mkdirSync(DATA_DIR, { recursive: true });
 
 export const SESSION_DATA_DIR = join(DATA_DIR, "Session");
