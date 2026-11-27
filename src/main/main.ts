@@ -32,6 +32,11 @@ function init() {
         console.log("Disabled Chromium features:", featuresArray.join(", "))
     }
 
+    app.on('second-instance', (event, commandLine, workingDirectory, additionalData) => {
+        if (!mainWindow) return;
+        showWindow(mainWindow);
+    })
+
     app.whenReady().then(async () => {
         bootstrap();
 
