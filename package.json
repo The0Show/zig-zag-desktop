@@ -1,7 +1,7 @@
 {
     "name": "zig-zag-desktop",
     "desktopName": "com.the0show.zig-zag-desktop",
-    "version": "0.1.0",
+    "version": "0.0.9",
     "private": true,
     "description": "A desktop client for zig~zag",
     "main": "dist/js/main.js",
@@ -34,6 +34,7 @@
     },
     "dependencies": {
         "dbus-native": "^0.16.3",
+        "electron-updater": "^6.8.11",
         "mpris-service": "^2.1.2"
     }
 }

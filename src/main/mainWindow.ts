@@ -15,6 +15,7 @@ export let mainWindow: BrowserWindow;
 function buildBrowserWindowOptions() {
     const options: BrowserWindowConstructorOptions = {
         backgroundColor: "#000000",
+        name: "com.the0show.zig-zag-desktop.MainWindow",
         title: "zig~zag desktop",
         webPreferences: {
             nodeIntegration: false,
@@ -24,7 +25,8 @@ function buildBrowserWindowOptions() {
             preload: join(__dirname, "preload.js"),
             spellcheck: true,
             backgroundThrottling: false
-        }
+        },
+        windowStatePersistence: true
     }
     return options;
 }

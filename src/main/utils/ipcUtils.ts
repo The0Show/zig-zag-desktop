@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainEvent, IpcMainInvokeEvent, WebFrameMain } from "electron/main";
+import { ZIG_ZAG_HOSTNAMES } from "main/constants";
 import { IpcEvents, IpcEventsInput, IpcEventsOutput } from "shared/IpcEvents";
 
 export function validate(frame: WebFrameMain | null, event: string) {
@@ -13,9 +14,11 @@ export function validate(frame: WebFrameMain | null, event: string) {
     } catch {
         throw new Error(`ipc[${event}]: Invalid URL ${frame.url}`);
     }
+
+    if (!ZIG_ZAG_HOSTNAMES.includes(hostname)) throw new Error(`ipc[${event}]: Disallowed hostname ${hostname}`);
 }
 
-export function handle<T extends IpcEvents>(event: T, cb: (event: IpcMainInvokeEvent, ...args: IpcEventsInput[T]) => IpcEventsOutput[T]) {
+export function handle<T extends IpcEvents>(event: T, cb: (event: IpcMainInvokeEvent, ...args: IpcEventsInput[T]) => Promise<IpcEventsOutput[T]>) {
     ipcMain.handle(event, (e, ...args: IpcEventsInput[T]) => {
         validate(e.senderFrame, event);
         return cb(e, ...args);

@@ -1,4 +1,5 @@
 import { BuildContext, BuildOptions, context } from "esbuild";
+import { execSync } from "node:child_process";
 
 const isDev = process.argv.includes("--dev");
 
@@ -19,7 +20,8 @@ const NodeCommonOpts: BuildOptions = {
         ".node": "file"
     },
     define: {
-        IS_DEV: JSON.stringify(isDev)
+        IS_DEV: JSON.stringify(isDev),
+        COMMIT: JSON.stringify(execSync("git rev-parse HEAD").toString().trim())
     }
 };
 
@@ -38,6 +40,11 @@ await Promise.all([
         ...NodeCommonOpts,
         entryPoints: ["src/preload/index.ts"],
         outfile: "dist/js/preload.js"
+    }),
+    createContext({
+        ...NodeCommonOpts,
+        entryPoints: ["src/renderer/index.ts"],
+        outfile: "dist/js/renderer.js"
     }),
 ])
 

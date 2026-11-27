@@ -27,3 +27,11 @@ const BrowserUserAgents = {
 
 export const BrowserUserAgent =
     `${USER_AGENT} ${BrowserUserAgents[process.platform] || BrowserUserAgents.windows}`;
+
+// dimensions shamefully stolen from Vesktop, which were shamelessly stolen from Discord Desktop
+export const MIN_WIDTH = 940;
+export const MIN_HEIGHT = 500;
+export const DEFAULT_WIDTH = 1280;
+export const DEFAULT_HEIGHT = 720;
+
+export const ZIG_ZAG_HOSTNAMES = ["www.zig-zag.fm"];

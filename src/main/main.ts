@@ -1,15 +1,40 @@
 import { app, BrowserWindow, nativeTheme } from "electron";
 import { createWindow, mainWindow } from "./mainWindow";
 import { showWindow } from "./utils/showWindow";
+
 import "./ipc";
+import "./updater";
+import { Settings } from "./settings";
 
 export let enableHardwareAcceleration = true;
 
+const isLinux = process.platform === "linux";
+
 function init() {
+    const { disableSmoothScroll, hardwareAcceleration, hardwareVideoAcceleration } = Settings.store;
+
     const enabledFeatures = new Set(app.commandLine.getSwitchValue("enable-features").split(","));
     const disabledFeatures = new Set(app.commandLine.getSwitchValue("disable-features").split(","));
     app.commandLine.removeSwitch("enable-features");
     app.commandLine.removeSwitch("disable-features");
+
+    if (!hardwareAcceleration || process.argv.includes("--disable-gpu")) {
+        enableHardwareAcceleration = false;
+        app.disableHardwareAcceleration();
+    } else {
+        if (hardwareVideoAcceleration) {
+            enabledFeatures.add("AcceleratedVideoDecoder");
+
+            if (isLinux) {
+                enabledFeatures.add("AcceleratedVideoDecodeLinuxGL");
+                enabledFeatures.add("AcceleratedVideoDecodeLinuxZeroCopyGL");
+            }
+        }
+    }
+
+    if (disableSmoothScroll) {
+        app.commandLine.appendSwitch("disable-smooth-scrolling");
+    }
 
     app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
