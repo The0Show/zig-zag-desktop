@@ -1,0 +1,44 @@
+name: "Release"
+
+on:
+    push:
+        tags:
+            - v*
+    workflow_dispatch: 
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+                include:
+                    - os: ubuntu-latest
+                      platform: linux
+                    - os: windows-latest
+                      platform: windows
+
+        steps:
+            - uses: actions/checkout@v6.1.0
+            - uses: pnpm/action-setup@v6.1.1
+
+            - name: Setup NodeJS
+              uses: actions/setup-node@v7.1.0
+              with:
+                  node-version: 26
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build
+              run: pnpm build
+
+            - name: Run Electron Builder
+              run: pnpm electron-builder --${{ matrix.platform }} --publish always
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
