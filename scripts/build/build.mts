@@ -33,7 +33,12 @@ await Promise.all([
         ...NodeCommonOpts,
         entryPoints: ["src/main/index.ts"],
         outfile: "dist/js/main.js"
-    })
+    }),
+    createContext({
+        ...NodeCommonOpts,
+        entryPoints: ["src/preload/index.ts"],
+        outfile: "dist/js/preload.js"
+    }),
 ])
 
 const watch = process.argv.includes("--watch");

@@ -1,6 +1,7 @@
 import { app, BrowserWindow, nativeTheme } from "electron";
 import { createWindow, mainWindow } from "./mainWindow";
 import { showWindow } from "./utils/showWindow";
+import "./ipc";
 
 export let enableHardwareAcceleration = true;
 

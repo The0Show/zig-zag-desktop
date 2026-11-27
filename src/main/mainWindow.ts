@@ -1,6 +1,8 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, Menu, MenuItem, MessageBoxOptions } from "electron/main";
 import { BrowserUserAgent } from "./constants";
 import { relaunch } from "./utils/relaunch";
+import { join } from "node:path";
+import { initTray } from "./tray";
 
 let isQuitting = false;
 
@@ -19,6 +21,7 @@ function buildBrowserWindowOptions() {
             sandbox: true,
             contextIsolation: true,
             devTools: true,
+            preload: join(__dirname, "preload.js"),
             spellcheck: true,
             backgroundThrottling: false
         }
@@ -111,7 +114,7 @@ function createMainWindow() {
     const win = (mainWindow = new BrowserWindow(buildBrowserWindowOptions()));
 
     win.on("close", (e) => {
-        const useTray = false;
+        const useTray = true;
         if (isQuitting || (process.platform != "darwin" && !useTray)) return;
 
         e.preventDefault();
@@ -127,6 +130,7 @@ function createMainWindow() {
     })
 
     initMenuBar();
+    initTray(win);
 
     win.webContents.session.setUserAgent(BrowserUserAgent);
     win.webContents.setUserAgent(BrowserUserAgent);
