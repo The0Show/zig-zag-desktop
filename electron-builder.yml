@@ -27,4 +27,5 @@ linux:
             Type: Application
 win:
     target:
+        - nsis
         - zip
