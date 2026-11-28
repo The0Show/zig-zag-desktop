@@ -33,8 +33,10 @@ function init() {
 
     app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
 
-    disabledFeatures.add("HardwareMediaKeyHandling");
-    disabledFeatures.add("MediaSessionService");
+    // TODO: uncomment once support for OS media player protocols (i.e. MPRIS) is re-added
+
+    // disabledFeatures.add("HardwareMediaKeyHandling");
+    // disabledFeatures.add("MediaSessionService");
 
     disabledFeatures.forEach(feat => enabledFeatures.delete(feat));
 
