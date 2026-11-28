@@ -1,6 +1,12 @@
 import { Settings } from "shared/settings";
 
-type ZigZagSettingCallback<T, K> = (setting: T) => K;
+export type ZigZagSettingCallback<T, K> = (setting: T) => K;
+
+type SetupCallback<T> = ZigZagSettingCallback<T, void>;
+type UpdateCallback<T> = ZigZagSettingCallback<T, Promise<boolean>>;
+type CleanupCallback<T> = ZigZagSettingCallback<T, void>;
+type DisabledPredicate<T> = ZigZagSettingCallback<T, boolean>;
+type VisiblePredicate<T> = ZigZagSettingCallback<T, boolean>;
 
 export default class ZigZagSettingBase<T> {
     protected _root: HTMLDivElement | null = null;
@@ -8,14 +14,14 @@ export default class ZigZagSettingBase<T> {
     protected _settingNameElem: HTMLSpanElement | null = null;
     protected _settingHelpElem: HTMLSpanElement | null = null;
 
+    protected _setupFunction: SetupCallback<T> = () => { };
+    protected _updateFunction: UpdateCallback<T> = async () => true;
+    protected _cleanupFunction: CleanupCallback<T> = () => { };
+    protected _disabledFunction: DisabledPredicate<T> = () => false;
+    protected _visibleFunction: VisiblePredicate<T> = () => true;
+
     title: string;
     description: string | null = null;
-
-    setupFunction: ZigZagSettingCallback<T, void> = () => { };
-    updateFunction: ZigZagSettingCallback<T, Promise<boolean>> = async () => true;
-    cleanupFunction: ZigZagSettingCallback<T, void> = () => { };
-    disabledFunction: ZigZagSettingCallback<T, boolean> = () => false;
-    visibleFunction: ZigZagSettingCallback<T, boolean> = () => true;
 
     constructor(title: string) {
         this.title = title;
@@ -26,35 +32,35 @@ export default class ZigZagSettingBase<T> {
         return this;
     }
 
-    setSetupFunction(cb: ZigZagSettingCallback<T, void>) {
-        this.setupFunction = cb;
+    setSetupFunction(cb: SetupCallback<T>) {
+        this._setupFunction = cb;
         return this;
     }
 
-    setUpdateFunction(cb: ZigZagSettingCallback<T, Promise<boolean>>) {
-        this.updateFunction = cb;
+    setUpdateFunction(cb: UpdateCallback<T>) {
+        this._updateFunction = cb;
         return this;
     }
 
-    setCleanupFunction(cb: ZigZagSettingCallback<T, void>) {
-        this.cleanupFunction = cb;
+    setCleanupFunction(cb: CleanupCallback<T>) {
+        this._cleanupFunction = cb;
         return this;
     }
 
-    setDisabledFunction(cb: ZigZagSettingCallback<T, boolean>) {
-        this.disabledFunction = cb;
+    setDisabledFunction(cb: DisabledPredicate<T>) {
+        this._disabledFunction = cb;
         return this;
     }
 
-    setVisibleFunction(cb: ZigZagSettingCallback<T, boolean>) {
-        this.visibleFunction = cb;
+    setVisibleFunction(cb: VisiblePredicate<T>) {
+        this._visibleFunction = cb;
         return this;
     }
 
     build(id: string) {
         this._root = document.createElement("div");
         this._root.classList.add("flex", "items-center", "justify-between", "gap-3", "py-1.5");
-        this._root.hidden = !this.visibleFunction(this as any); // ugh
+        this._root.hidden = !this._visibleFunction(this as any); // ugh
 
         const labelContainer = document.createElement("div");
         labelContainer.classList.add("flex", "min-w-0", "flex-col", "gap-0.5");
@@ -73,7 +79,7 @@ export default class ZigZagSettingBase<T> {
         }
 
         this._root.appendChild(labelContainer);
-        this.setupFunction(this as any); // ugh
+        this._setupFunction(this as any); // ugh
 
         return this._root;
     }
@@ -83,11 +89,11 @@ export default class ZigZagSettingBase<T> {
     }
 
     update(): boolean {
-        if (!this.updateFunction(this as any)) return false; // ugh
+        if (!this._updateFunction(this as any)) return false; // ugh
 
         if (!this.shouldUpdate()) return false;
 
-        this._root!.hidden = !this.visibleFunction(this as any); // ugh
+        this._root!.hidden = !this._visibleFunction(this as any); // ugh
 
         this._settingNameElem!.innerText = this.title;
         if (this.description && this._settingHelpElem) {
@@ -102,6 +108,6 @@ export default class ZigZagSettingBase<T> {
         this._settingHelpElem = null;
         this._root = null;
 
-        this.cleanupFunction(this as any); // ugh
+        this._cleanupFunction(this as any); // ugh
     }
 }

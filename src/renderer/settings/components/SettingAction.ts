@@ -2,6 +2,7 @@ import { updateSettings } from "../settings";
 import ZigZagSettingBase from "./SettingBase";
 
 type ZigZagActionCallback = (setting: ZigZagSettingAction) => void;
+
 export default class ZigZagSettingAction extends ZigZagSettingBase<ZigZagSettingAction> {
     private _container: HTMLDivElement | null = null;
     private _button: HTMLButtonElement | null = null;
@@ -72,7 +73,7 @@ export default class ZigZagSettingAction extends ZigZagSettingBase<ZigZagSetting
 
         if (!this._button) return false;
         this._button.innerText = this.label;
-        this._button.disabled = this.disabled ? true : this.disabledFunction(this);
+        this._button.disabled = this.disabled ? true : this._disabledFunction(this);
         return true;
     }
 

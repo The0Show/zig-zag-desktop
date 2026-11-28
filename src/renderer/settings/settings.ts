@@ -14,67 +14,76 @@ export function markRestartRequired() {
     updateSettings();
 }
 
+const updater = new ZigZagSettingAction(`zig~zag desktop ${ZigZagDesktop.app.getVersion()}`, IS_DEV ? "Development build" : "Check for updates")
+    .setDisabledFunction(() => IS_DEV)
+    .setDescription(`Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`)
+    .setSetupFunction(async (setting) => {
+        ZigZagDesktop.updater.onDownloadProgress((p) => {
+            setting.label = `Downloading ${p.toFixed(0)}%`;
+            setting.disabled = true;
+            setting.update();
+        });
+
+        ZigZagDesktop.updater.onDownloadCompleted((i) => {
+            setting.label = `Restart now`;
+            setting.description = `v${i.version} will be installed after closing zig~zag`;
+            setting.disabled = false;
+            setting.update();
+        });
+    })
+    .setCleanupFunction(async (setting) => {
+        ZigZagDesktop.updater.onDownloadProgress(() => { });
+        ZigZagDesktop.updater.onDownloadCompleted(() => { });
+        setting.label = IS_DEV ? "Development build" : "Check for updates";
+    })
+    .setUpdateFunction(async (setting) => {
+        const status = await ZigZagDesktop.updater.getStatus();
+        if (status.info && status.pendingRestart) {
+            setting.label = `Restart now`;
+            setting.description = `v${status.info.version} will be installed after closing zig~zag`;
+            setting.disabled = false;
+        } else {
+            setting.description = `Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`;
+            setting.disabled = false;
+        }
+
+        return true;
+    })
+    .setAction(async (setting) => {
+        const enabled = await ZigZagDesktop.updater.getEnabled();
+
+        if (!enabled) {
+            window.open("https://github.com/The0Show/zig-zag-desktop/releases");
+            return;
+        };
+
+        const { info, pendingRestart } = await ZigZagDesktop.updater.getStatus();
+
+        if (!info) {
+            setting.disabled = true;
+            setting.update();
+            const { isUpdateAvailable, info } = await ZigZagDesktop.updater.checkForUpdates();
+
+            if (!isUpdateAvailable) {
+                setting.label = "Up to date";
+                setting.disabled = false;
+                setting.update();
+            } else {
+                setting.label = "Downloading 0%";
+                setting.update();
+            }
+        } else if (pendingRestart) {
+            ZigZagDesktop.updater.applyUpdates();
+        }
+    })
+
 const config: ZigZagSettingBase<any>[] = [
     new ZigZagRestartRequired(),
-    new ZigZagSettingAction(`zig~zag desktop ${ZigZagDesktop.app.getVersion()}`, IS_DEV ? "Development build" : "Check for updates")
-        .setDisabledFunction(() => IS_DEV)
-        .setDescription(`Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`)
-        .setSetupFunction(async (setting) => {
-            ZigZagDesktop.updater.onDownloadProgress((p) => {
-                setting.label = `Downloading ${p.toFixed(0)}%`;
-                setting.disabled = true;
-                setting.update();
-            });
-
-            ZigZagDesktop.updater.onDownloadCompleted((i) => {
-                setting.label = `Restart now`;
-                setting.description = `v${i.version} will be installed after closing zig~zag`;
-                setting.disabled = false;
-                setting.update();
-            });
-        })
-        .setUpdateFunction(async (setting) => {
-            const status = await ZigZagDesktop.updater.getStatus();
-            if (status.info && status.pendingRestart) {
-                setting.label = `Restart now`;
-                setting.description = `v${status.info.version} will be installed after closing zig~zag`;
-                setting.disabled = false;
-            } else {
-                setting.label = IS_DEV ? "Development build" : "Check for updates";
-                setting.description = `Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`;
-                setting.disabled = false;
-            }
-
-            return true;
-        })
-        .setAction(async (setting) => {
-            const enabled = await ZigZagDesktop.updater.getEnabled();
-
-            if (!enabled) {
-                window.open("https://github.com/The0Show/zig-zag-desktop/releases");
-                return;
-            };
-
-            const { info, pendingRestart } = await ZigZagDesktop.updater.getStatus();
-
-            if (!info) {
-                setting.disabled = true;
-                setting.update();
-                const { isUpdateAvailable, info } = await ZigZagDesktop.updater.checkForUpdates();
-
-                if (!isUpdateAvailable) {
-                    setting.label = "Up to date";
-                    setting.disabled = false;
-                    setting.update();
-                } else {
-                    setting.label = "Downloading 0%";
-                    setting.update();
-                }
-            } else if (pendingRestart) {
-                ZigZagDesktop.updater.applyUpdates();
-            }
+    updater,
+    new ZigZagSettingBoolean("Enable prerelease builds", "downloadPreleaseBuilds")
+        .setChangedFunction(() => {
+            updater.label = "Check for updates";
         }),
-    new ZigZagSettingBoolean("Enable prerelease builds", "downloadPreleaseBuilds"),
     new ZigZagSettingBoolean("Hardware video decoding", "hardwareVideoAcceleration")
         .setDescription("Uses your GPU to decode video ~ improves performance but can cause graphical glitches")
         .setRequiresRestart(true),

@@ -1,4 +1,4 @@
-import { buildSettings } from "renderer/settings/settings";
+import { buildSettings, cleanupSettings } from "renderer/settings/settings";
 
 let builtSettings = false;
 
@@ -19,5 +19,6 @@ setInterval(() => {
         }
     } else {
         builtSettings = false;
+        cleanupSettings();
     }
 }, 300);

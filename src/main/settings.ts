@@ -15,8 +15,7 @@ import { DefaultSettings } from "shared/defaultSettings";
 import { SettingsStore } from "shared/utils/SettingsStore";
 import { handle, handleSync } from "./utils/ipcUtils";
 
-const SETTINGS_FILE = join(DATA_DIR, "settings.json");
-const STATE_FILE = join(DATA_DIR, "state.json");
+const SETTINGS_FILE = join(DATA_DIR, "Settings.json");
 
 function loadSettings<T extends object = any>(file: string, name: string, defaults?: T) {
     let settings = {} as T;

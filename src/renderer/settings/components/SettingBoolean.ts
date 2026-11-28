@@ -81,6 +81,8 @@ export default class ZigZagSettingBoolean extends ZigZagSettingConfigurable<ZigZ
         this._button.appendChild(this._toggle);
 
         this._button.onclick = async () => {
+            this._onChangeCallback(this);
+
             Settings.store[this.key] = !Settings.store[this.key];
             this._changed = true;
 
@@ -122,7 +124,7 @@ export default class ZigZagSettingBoolean extends ZigZagSettingConfigurable<ZigZ
             value ? "bg-white/90" : "bg-white/45"
         );
 
-        this._button.disabled = this.disabledFunction(this);
+        this._button.disabled = this._disabledFunction(this);
         return true;
     }
 
