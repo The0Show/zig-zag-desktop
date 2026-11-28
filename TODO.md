@@ -1,0 +1,5 @@
+- [ ] ~~MPRIS (and platform equivilants)~~
+    - zig~zag has this built in (it seems to work better under Electron anyways?)
+- [ ] Player controls in tray menu
+    - [ ] Navigation
+    - [ ] Gemming
