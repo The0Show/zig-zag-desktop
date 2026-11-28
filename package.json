@@ -4,6 +4,7 @@
     "version": "0.1.0",
     "private": true,
     "description": "A desktop client for zig~zag",
+    "homepage": "https://github.com/The0Show/zig-zag-desktop",
     "main": "dist/js/main.js",
     "scripts": {
         "build": "tsx scripts/build/build.mts",

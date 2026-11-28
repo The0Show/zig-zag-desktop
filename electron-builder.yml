@@ -29,3 +29,6 @@ win:
     target:
         - nsis
         - zip
+nsis:
+    oneClick: false
+    runAfterFinish: false
