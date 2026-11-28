@@ -3,7 +3,8 @@ import { handle, handleSync, sendToRenderer } from "./utils/ipcUtils";
 import { Settings } from "./settings";
 
 let updateInfo: UpdateInfo | null = null;
-let updateDownloaded: boolean = false;
+let pendingRestart: boolean = false;
+let updateDownloading: boolean = false;
 
 autoUpdater.fullChangelog = true;
 autoUpdater.allowDowngrade = true;
@@ -14,11 +15,13 @@ Settings.addChangeListener("downloadPreleaseBuilds", () => {
 })
 
 autoUpdater.on("download-progress", (p) => {
+    updateDownloading = true;
     sendToRenderer("updater:progress", p.percent);
 });
 
 autoUpdater.on("update-downloaded", (i) => {
-    updateDownloaded = true;
+    updateDownloading = false;
+    pendingRestart = true;
     sendToRenderer("updater:downloaded", i);
 });
 
@@ -36,15 +39,16 @@ handle("updater:check_for_updates", async () => {
 
     if (res?.isUpdateAvailable && res.updateInfo) {
         updateInfo = res.updateInfo;
+        updateDownloading = true;
         return { isUpdateAvailable: res.isUpdateAvailable, info: res.updateInfo }
     }
     return { isUpdateAvailable: false };
 });
 
 handle("updater:status", async () => {
-    return { info: updateInfo, pendingRestart: updateDownloaded };
+    return { info: updateInfo, updateDownloading, pendingRestart };
 });
 
 handleSync("updater:apply", () => {
-    if (updateDownloaded) autoUpdater.quitAndInstall();
+    if (pendingRestart) autoUpdater.quitAndInstall();
 })

@@ -37,11 +37,14 @@ const updater = new ZigZagSettingAction(`zig~zag desktop ${ZigZagDesktop.app.get
         setting.label = IS_DEV ? "Development build" : "Check for updates";
     })
     .setUpdateFunction(async (setting) => {
-        const status = await ZigZagDesktop.updater.getStatus();
-        if (status.info && status.pendingRestart) {
+        const { info, pendingRestart, updateDownloading } = await ZigZagDesktop.updater.getStatus();
+        if (info && pendingRestart) {
             setting.label = `Restart now`;
-            setting.description = `v${status.info.version} will be installed after closing zig~zag`;
+            setting.description = `v${info.version} will be installed after closing zig~zag`;
             setting.disabled = false;
+        } else if (updateDownloading) {
+            setting.disabled = true;
+            setting.update();
         } else {
             setting.description = `Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`;
             setting.disabled = false;
@@ -70,6 +73,7 @@ const updater = new ZigZagSettingAction(`zig~zag desktop ${ZigZagDesktop.app.get
                 setting.update();
             } else {
                 setting.label = "Downloading 0%";
+                setting.disabled = true;
                 setting.update();
             }
         } else if (pendingRestart) {
