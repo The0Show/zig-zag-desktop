@@ -26,7 +26,7 @@ export function initTray(window: BrowserWindow) {
     tray.setToolTip("zig~zag desktop");
     tray.setContextMenu(menu);
     tray.on("click", () => {
-        if (window.isVisible() && window.isFocused()) window.hide();
+        if (window.isVisible() && !window.isMinimized()) window.hide();
         else showWindow(window);
     });
 }
