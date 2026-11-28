@@ -6,6 +6,7 @@ import { destroyTray, initTray } from "./tray";
 import { UrlTrust, validateUrl } from "./utils/validateUrl";
 import { shell } from "electron/common";
 import { Settings } from "./settings";
+import displayAboutWindow from "./about";
 
 let isQuitting = false;
 
@@ -74,6 +75,15 @@ function initMenuBar() {
             label: "Help",
             type: "submenu",
             submenu: [
+                {
+                    label: "About",
+                    click() {
+                        displayAboutWindow(mainWindow);
+                    }
+                },
+                {
+                    type: "separator"
+                },
                 {
                     label: "Reload",
                     role: "forceReload"

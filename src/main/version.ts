@@ -1,5 +1,5 @@
 import { app } from "electron/main";
 
 export function getVersionString() {
-    return `${app.getVersion()}${IS_DEV ? " (dev)" : ""}`
+    return `v${app.getVersion()}${IS_DEV ? " (dev)" : ""}`
 }

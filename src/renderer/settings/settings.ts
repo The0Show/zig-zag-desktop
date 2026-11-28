@@ -16,7 +16,7 @@ export function markRestartRequired() {
 
 const config: ZigZagSettingBase<any>[] = [
     new ZigZagRestartRequired(),
-    new ZigZagSettingAction(`zig~zag desktop v${ZigZagDesktop.app.getVersion()}`, IS_DEV ? "Development build" : "Check for updates")
+    new ZigZagSettingAction(`zig~zag desktop ${ZigZagDesktop.app.getVersion()}`, IS_DEV ? "Development build" : "Check for updates")
         .setDisabledFunction(() => IS_DEV)
         .setDescription(`Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`)
         .setSetupFunction(async (setting) => {
