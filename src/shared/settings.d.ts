@@ -5,4 +5,5 @@ export interface Settings {
     minimizeToTray: boolean;
     disableSmoothScroll: boolean;
     hardwareVideoAcceleration: boolean;
+    downloadPreleaseBuilds: boolean;
 }

@@ -21,7 +21,8 @@ const NodeCommonOpts: BuildOptions = {
     },
     define: {
         IS_DEV: JSON.stringify(isDev),
-        COMMIT: JSON.stringify(execSync("git rev-parse HEAD").toString().trim())
+        COMMIT: JSON.stringify(execSync("git rev-parse HEAD").toString().trim()),
+        BUILD_TIMESTAMP: JSON.stringify(new Date().toUTCString())
     }
 };
 

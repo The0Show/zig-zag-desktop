@@ -16,8 +16,9 @@ export function markRestartRequired() {
 
 const config: ZigZagSettingBase<any>[] = [
     new ZigZagRestartRequired(),
-    new ZigZagSettingAction(`zig~zag desktop v${ZigZagDesktop.app.getVersion()}`, "Check for updates")
-        .setDescription(`Commit ${COMMIT.slice(0, 7)}`)
+    new ZigZagSettingAction(`zig~zag desktop v${ZigZagDesktop.app.getVersion()}`, IS_DEV ? "Development build" : "Check for updates")
+        .setDescription(`Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`)
+        .setDisabledFunction(() => IS_DEV)
         .setSetupFunction(async (setting) => {
             const status = await ZigZagDesktop.updater.getStatus();
 
@@ -70,8 +71,9 @@ const config: ZigZagSettingBase<any>[] = [
                 ZigZagDesktop.updater.applyUpdates();
             }
         }),
+    new ZigZagSettingBoolean("Enable prerelease builds", "downloadPreleaseBuilds"),
     new ZigZagSettingBoolean("Hardware video decoding", "hardwareVideoAcceleration")
-        .setDescription("Uses your GPU to decode video ~ Improves performance but can cause graphical glitches")
+        .setDescription("Uses your GPU to decode video ~ improves performance but can cause graphical glitches")
         .setRequiresRestart(true),
     new ZigZagSettingBoolean("Tray icon", "tray")
         .setDescription("Adds a tray icon for zig~zag desktop")
