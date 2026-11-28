@@ -25,7 +25,7 @@ export interface IpcEventsOutput {
     "updater:check_for_updates": { isUpdateAvailable: boolean, info?: UpdateInfo };
     "updater:downloaded": void;
     "updater:enabled": boolean;
-    "updater:status": { info?: UpdateInfo, pendingRestart: boolean };
+    "updater:status": { info?: UpdateInfo | null, pendingRestart: boolean };
     "updater:progress": void;
 }
 

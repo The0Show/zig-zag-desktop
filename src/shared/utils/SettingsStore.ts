@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-// import { LiteralUnion } from "type-fest";
+import { LiteralUnion } from "type-fest";
 
 // Resolves a possibly nested prop in the form of "some.nested.prop" to type of T.some.nested.prop
 type ResolvePropDeep<T, P> = P extends `${infer Pre}.${infer Suf}`
@@ -129,14 +129,14 @@ export class SettingsStore<T extends object> {
     //  * @param path
     //  * @param cb
     //  */
-    // public addChangeListener<P extends LiteralUnion<keyof T, string>>(
-    //     path: P,
-    //     cb: (data: ResolvePropDeep<T, P>) => void
-    // ) {
-    //     const listeners = this.pathListeners.get(path as string) ?? new Set();
-    //     listeners.add(cb);
-    //     this.pathListeners.set(path as string, listeners);
-    // }
+    public addChangeListener<P extends LiteralUnion<keyof T, string>>(
+        path: P,
+        cb: (data: ResolvePropDeep<T, P>) => void
+    ) {
+        const listeners = this.pathListeners.get(path as string) ?? new Set();
+        listeners.add(cb);
+        this.pathListeners.set(path as string, listeners);
+    }
 
     /**
      * Remove a global listener
@@ -150,13 +150,13 @@ export class SettingsStore<T extends object> {
     //  * Remove a scoped listener
     //  * @see {@link addChangeListener}
     //  */
-    // public removeChangeListener(path: LiteralUnion<keyof T, string>, cb: (data: any) => void) {
-    //     const listeners = this.pathListeners.get(path as string);
-    //     if (!listeners) return;
+    public removeChangeListener(path: LiteralUnion<keyof T, string>, cb: (data: any) => void) {
+        const listeners = this.pathListeners.get(path as string);
+        if (!listeners) return;
 
-    //     listeners.delete(cb);
-    //     if (!listeners.size) this.pathListeners.delete(path as string);
-    // }
+        listeners.delete(cb);
+        if (!listeners.size) this.pathListeners.delete(path as string);
+    }
 
     /**
      * Call all global change listeners

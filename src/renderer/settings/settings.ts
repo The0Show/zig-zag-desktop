@@ -17,32 +17,35 @@ export function markRestartRequired() {
 const config: ZigZagSettingBase<any>[] = [
     new ZigZagRestartRequired(),
     new ZigZagSettingAction(`zig~zag desktop v${ZigZagDesktop.app.getVersion()}`, IS_DEV ? "Development build" : "Check for updates")
-        .setDescription(`Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`)
         .setDisabledFunction(() => IS_DEV)
+        .setDescription(`Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`)
         .setSetupFunction(async (setting) => {
-            const status = await ZigZagDesktop.updater.getStatus();
-
-            if (status.info && status.pendingRestart) {
-                setting.description = `v${status.info.version} will be installed after closing zig~zag`;
-            }
-
-            if (status.pendingRestart) setting.label = `Restart now`;
-
-            updateSettings();
-
             ZigZagDesktop.updater.onDownloadProgress((p) => {
                 setting.label = `Downloading ${p.toFixed(0)}%`;
                 setting.disabled = true;
-                updateSettings();
+                setting.update();
             });
 
             ZigZagDesktop.updater.onDownloadCompleted((i) => {
                 setting.label = `Restart now`;
-                setting.disabled = false;
-
                 setting.description = `v${i.version} will be installed after closing zig~zag`;
-                updateSettings();
+                setting.disabled = false;
+                setting.update();
             });
+        })
+        .setUpdateFunction(async (setting) => {
+            const status = await ZigZagDesktop.updater.getStatus();
+            if (status.info && status.pendingRestart) {
+                setting.label = `Restart now`;
+                setting.description = `v${status.info.version} will be installed after closing zig~zag`;
+                setting.disabled = false;
+            } else {
+                setting.label = IS_DEV ? "Development build" : "Check for updates";
+                setting.description = `Build ${COMMIT.slice(0, 7)} ~ ${BUILD_TIMESTAMP}`;
+                setting.disabled = false;
+            }
+
+            return true;
         })
         .setAction(async (setting) => {
             const enabled = await ZigZagDesktop.updater.getEnabled();
@@ -56,16 +59,16 @@ const config: ZigZagSettingBase<any>[] = [
 
             if (!info) {
                 setting.disabled = true;
-                updateSettings();
+                setting.update();
                 const { isUpdateAvailable, info } = await ZigZagDesktop.updater.checkForUpdates();
 
                 if (!isUpdateAvailable) {
                     setting.label = "Up to date";
                     setting.disabled = false;
-                    updateSettings();
+                    setting.update();
                 } else {
                     setting.label = "Downloading 0%";
-                    updateSettings();
+                    setting.update();
                 }
             } else if (pendingRestart) {
                 ZigZagDesktop.updater.applyUpdates();

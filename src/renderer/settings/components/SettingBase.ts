@@ -12,7 +12,7 @@ export default class ZigZagSettingBase<T> {
     description: string | null = null;
 
     setupFunction: ZigZagSettingCallback<T, void> = () => { };
-    updateFunction: ZigZagSettingCallback<T, boolean> = () => true;
+    updateFunction: ZigZagSettingCallback<T, Promise<boolean>> = async () => true;
     cleanupFunction: ZigZagSettingCallback<T, void> = () => { };
     disabledFunction: ZigZagSettingCallback<T, boolean> = () => false;
     visibleFunction: ZigZagSettingCallback<T, boolean> = () => true;
@@ -31,7 +31,7 @@ export default class ZigZagSettingBase<T> {
         return this;
     }
 
-    setUpdateFunction(cb: ZigZagSettingCallback<T, boolean>) {
+    setUpdateFunction(cb: ZigZagSettingCallback<T, Promise<boolean>>) {
         this.updateFunction = cb;
         return this;
     }

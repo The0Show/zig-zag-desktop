@@ -1,7 +1,7 @@
 {
     "name": "zig-zag-desktop",
     "desktopName": "com.the0show.zig-zag-desktop",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "private": true,
     "description": "A desktop client for zig~zag",
     "main": "dist/js/main.js",
@@ -30,6 +30,7 @@
         "electron-builder": "^26.18.0",
         "esbuild": "^0.28.2",
         "tsx": "^4.23.15",
+        "type-fest": "^6.0.3",
         "typescript": "^7.0.2"
     },
     "dependencies": {
