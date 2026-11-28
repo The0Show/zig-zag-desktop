@@ -40,10 +40,10 @@ function initMenuBar() {
             label: "File",
             type: "submenu",
             submenu: [
-                {
-                    label: "Sign out",
-                    accelerator: "Ctrl+Shift+W"
-                },
+                // {
+                //     label: "Sign out",
+                //     accelerator: "Ctrl+Shift+W"
+                // },
                 {
                     label: "Quit",
                     role: "quit",
