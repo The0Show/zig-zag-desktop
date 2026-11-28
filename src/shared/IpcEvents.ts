@@ -5,6 +5,9 @@ export interface IpcEventsInput {
     "app:relaunch": [];
     "app:get_renderer_script": [];
     "app:get_version": [];
+    "tray:set_logged_in": [loggedIn: boolean];
+    "tray:set_gemmed": [gemmed: boolean];
+    "player:set_gemmed": [gemmed: boolean];
     "settings:get": [];
     "settings:set": [settings: Settings, path?: string];
     "updater:apply": [];
@@ -19,6 +22,9 @@ export interface IpcEventsOutput {
     "app:relaunch": void;
     "app:get_renderer_script": string;
     "app:get_version": string;
+    "tray:set_logged_in": void;
+    "tray:set_gemmed": void;
+    "player:set_gemmed": void;
     "settings:get": Settings;
     "settings:set": void;
     "updater:apply": void;
