@@ -3,7 +3,12 @@ import { showWindow } from "./utils/showWindow";
 import { getRootFSPath } from "./rootfs";
 import { Settings } from "./settings";
 
-let tray: Tray;
+let tray: Tray | undefined;
+
+export function destroyTray() {
+    tray?.destroy();
+    tray = undefined;
+}
 
 export function initTray(window: BrowserWindow) {
     if (!Settings.store.tray) return;

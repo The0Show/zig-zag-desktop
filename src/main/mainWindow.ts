@@ -2,7 +2,7 @@ import { app, BrowserWindow, BrowserWindowConstructorOptions, dialog, Menu, Menu
 import { BrowserUserAgent } from "./constants";
 import { relaunch } from "./utils/relaunch";
 import { join } from "node:path";
-import { initTray } from "./tray";
+import { destroyTray, initTray } from "./tray";
 import { UrlTrust, validateUrl } from "./utils/validateUrl";
 import { shell } from "electron/common";
 import { Settings } from "./settings";
@@ -148,6 +148,13 @@ function initNavigationGuard(win: BrowserWindow) {
     })
 }
 
+function initSettingsListeners(win: BrowserWindow) {
+    Settings.addChangeListener("tray", (enable) => {
+        if (enable) initTray(win);
+        else destroyTray();
+    })
+}
+
 function createMainWindow() {
     const win = (mainWindow = new BrowserWindow(buildBrowserWindowOptions()));
 
@@ -167,6 +174,7 @@ function createMainWindow() {
         win.flashFrame(false)
     })
 
+    initSettingsListeners(win);
     initNavigationGuard(win);
     initMenuBar();
     initTray(win);

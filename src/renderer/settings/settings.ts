@@ -79,8 +79,7 @@ const config: ZigZagSettingBase<any>[] = [
         .setDescription("Uses your GPU to decode video ~ improves performance but can cause graphical glitches")
         .setRequiresRestart(true),
     new ZigZagSettingBoolean("Tray icon", "tray")
-        .setDescription("Adds a tray icon for zig~zag desktop")
-        .setRequiresRestart(true),
+        .setDescription("Adds a tray icon for zig~zag desktop"),
     new ZigZagSettingBoolean("Minimize to tray", "minimizeToTray")
         .setDescription("Closing the window will keep zig~zag desktop open in the tray instead of closing")
         .setDisabledFunction(() => !Settings.store.tray),
