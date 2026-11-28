@@ -6,6 +6,7 @@ let updateInfo: UpdateInfo | null = null;
 let updateDownloaded: boolean = false;
 
 autoUpdater.fullChangelog = true;
+autoUpdater.allowDowngrade = true;
 autoUpdater.allowPrerelease = Settings.store.downloadPreleaseBuilds;
 
 Settings.addChangeListener("downloadPreleaseBuilds", () => {
