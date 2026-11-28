@@ -1,10 +1,13 @@
 import { app, BrowserWindow, Menu, Tray } from "electron/main";
 import { showWindow } from "./utils/showWindow";
 import { getRootFSPath } from "./rootfs";
+import { Settings } from "./settings";
 
 let tray: Tray;
 
 export function initTray(window: BrowserWindow) {
+    if (!Settings.store.tray) return;
+
     const menu = Menu.buildFromTemplate([
         {
             label: "Show zig~zag",

@@ -2,7 +2,7 @@ import { Settings } from "./settings";
 
 export const DefaultSettings: Settings = {
     tray: true,
+    minimizeToTray: true,
     disableSmoothScroll: false,
-    hardwareAcceleration: true,
     hardwareVideoAcceleration: true
 }

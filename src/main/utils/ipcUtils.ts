@@ -1,5 +1,6 @@
 import { ipcMain, IpcMainEvent, IpcMainInvokeEvent, WebFrameMain } from "electron/main";
 import { ZIG_ZAG_HOSTNAMES } from "main/constants";
+import { mainWindow } from "main/mainWindow";
 import { IpcEvents, IpcEventsInput, IpcEventsOutput } from "shared/IpcEvents";
 
 export function validate(frame: WebFrameMain | null, event: string) {
@@ -30,4 +31,9 @@ export function handleSync<T extends IpcEvents>(event: T, cb: (event: IpcMainEve
         validate(e.senderFrame, event);
         e.returnValue = cb(e, ...args);
     })
+}
+
+export function sendToRenderer<T extends IpcEvents>(event: T, ...args: IpcEventsInput[T]) {
+    if (!mainWindow) return;
+    mainWindow.webContents.send(event, ...args);
 }

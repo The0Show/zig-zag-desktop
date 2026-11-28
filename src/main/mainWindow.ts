@@ -3,6 +3,9 @@ import { BrowserUserAgent } from "./constants";
 import { relaunch } from "./utils/relaunch";
 import { join } from "node:path";
 import { initTray } from "./tray";
+import { UrlTrust, validateUrl } from "./utils/validateUrl";
+import { shell } from "electron/common";
+import { Settings } from "./settings";
 
 let isQuitting = false;
 
@@ -112,11 +115,44 @@ function openDebugPage(page: string) {
     win.loadURL(page);
 }
 
+function initNavigationGuard(win: BrowserWindow) {
+    const onNavigate = (e: Electron.Event<{ url: string; isMainFrame: boolean }>) => {
+        if (!e.isMainFrame) return;
+        const trustLevel = validateUrl(e.url);
+        if (trustLevel == UrlTrust.ZIG_ZAG) return;
+
+        e.preventDefault();
+    };
+
+    win.webContents.on("will-navigate", onNavigate);
+    win.webContents.on("will-redirect", onNavigate);
+
+    win.webContents.setWindowOpenHandler(({ url, frameName, features }) => {
+        try {
+            var { protocol, hostname, pathname, searchParams } = new URL(url);
+        } catch {
+            return { action: "deny" };
+        }
+
+        if (url === "about:blank") return { action: "allow" };
+
+        const trustLevel = validateUrl(url);
+
+        if (trustLevel >= UrlTrust.TRUSTED) {
+            shell.openExternal(url);
+        } else {
+            console.warn(`WARN: Not opening ${url} in browser as it is not trusted`);
+        }
+
+        return { action: "deny" };
+    })
+}
+
 function createMainWindow() {
     const win = (mainWindow = new BrowserWindow(buildBrowserWindowOptions()));
 
     win.on("close", (e) => {
-        const useTray = true;
+        const useTray = Settings.store.minimizeToTray && Settings.store.tray;
         if (isQuitting || (process.platform != "darwin" && !useTray)) return;
 
         e.preventDefault();
@@ -131,6 +167,7 @@ function createMainWindow() {
         win.flashFrame(false)
     })
 
+    initNavigationGuard(win);
     initMenuBar();
     initTray(win);
 

@@ -2,7 +2,7 @@ import { Rectangle } from "electron/utility";
 
 export interface Settings {
     tray: boolean;
+    minimizeToTray: boolean;
     disableSmoothScroll: boolean;
-    hardwareAcceleration: boolean;
     hardwareVideoAcceleration: boolean;
 }
